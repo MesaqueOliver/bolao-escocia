@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bolão Escócia × Brasil 🏴󠁧󠁢󠁳󠁣󠁴󠁿 🇧🇷</title>
+
+  <style>
+    /* ===== Reset básico ===== */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --verde-escuro: #1B5E20;
+      --verde-claro: #4CAF50;
+      --amarelo: #FFD700;
+      --branco: #ffffff;
+      --erro: #c62828;
+      --sucesso: #2e7d32;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--verde-escuro) 0%, var(--verde-claro) 100%);
+      min-height: 100vh;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      color: #222;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--branco);
+      border-radius: 18px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      animation: surgir 0.5s ease;
+    }
+
+    @keyframes surgir {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Cabeçalho ===== */
+    header {
+      background: linear-gradient(135deg, var(--verde-escuro), var(--verde-claro));
+      color: var(--branco);
+      padding: 26px 20px;
+      text-align: center;
+      border-bottom: 5px solid var(--amarelo);
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    header .bandeiras { font-size: 2rem; letter-spacing: 8px; }
+
+    header p { margin-top: 8px; font-size: 0.95rem; opacity: 0.95; }
+
+    /* ===== Contador de participantes ===== */
+    .contador {
+      background: var(--amarelo);
+      color: var(--verde-escuro);
+      text-align: center;
+      font-weight: 700;
+      padding: 12px;
+      font-size: 1.05rem;
+    }
+
+    .contador span { font-size: 1.3rem; }
+
+    /* ===== Formulário ===== */
+    form { padding: 22px 20px 26px; }
+
+    .campo { margin-bottom: 16px; }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--verde-escuro);
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      background: #fafafa;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--verde-claro);
+      box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+      background: #fff;
+    }
+
+    /* ===== Placar ===== */
+    .placar {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 14px;
+      background: #f1f8f1;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .placar .time { flex: 1; text-align: center; }
+
+    .placar .time label { text-align: center; }
+
+    .placar .time .nome-time { font-size: 1.5rem; margin-bottom: 6px; }
+
+    .placar input[type="number"] {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      padding: 10px;
+      -moz-appearance: textfield;
+    }
+
+    .placar input[type="number"]::-webkit-outer-spin-button,
+    .placar input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none; margin: 0;
+    }
+
+    .placar .x {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--verde-escuro);
+      padding-bottom: 12px;
+    }
+
+    /* ===== Pagamento ===== */
+    .pagamento {
+      background: #fff8e1;
+      border: 1px dashed var(--amarelo);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .checkbox-linha {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .checkbox-linha input[type="checkbox"] {
+      width: 20px; height: 20px; accent-color: var(--verde-claro);
+      flex-shrink: 0;
+    }
+
+    .checkbox-linha label { margin: 0; font-weight: 500; }
+
+    /* ===== Botão ===== */
+    button[type="submit"] {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--branco);
+      background: linear-gradient(135deg, var(--verde-escuro), var(--verde-claro));
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.3s, opacity 0.3s;
+      box-shadow: 0 6px 18px rgba(27, 94, 32, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    button[type="submit"]:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(27, 94, 32, 0.5);
+    }
+
+    button[type="submit"]:active:not(:disabled) { transform: translateY(0); }
+
+    button[type="submit"]:disabled { opacity: 0.7; cursor: not-allowed; }
+
+    /* ===== Spinner ===== */
+    .spinner {
+      width: 20px; height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: girar 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes girar { to { transform: rotate(360deg); } }
+
+    /* ===== Mensagens ===== */
+    .mensagem {
+      display: none;
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      text-align: center;
+      animation: surgir 0.4s ease;
+    }
+
+    .mensagem.sucesso { display: block; background: #e8f5e9; color: var(--sucesso); border: 1px solid var(--sucesso); }
+    .mensagem.erro    { display: block; background: #ffebee; color: var(--erro);    border: 1px solid var(--erro); }
+
+    /* ===== Lista de palpites ===== */
+    .lista-palpites { padding: 0 20px 24px; }
+
+    .lista-palpites h2 {
+      color: var(--verde-escuro);
+      font-size: 1.15rem;
+      margin-bottom: 12px;
+      text-align: center;
+      border-top: 1px solid #eee;
+      padding-top: 18px;
+    }
+
+    .palpite-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f7f7f7;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      border-left: 4px solid var(--verde-claro);
+    }
+
+    .palpite-item .info { display: flex; flex-direction: column; }
+    .palpite-item .info .nome { font-weight: 700; color: var(--verde-escuro); }
+    .palpite-item .info .pago { font-size: 0.8rem; color: #777; }
+    .palpite-item .info .pago.ok { color: var(--sucesso); }
+
+    .palpite-item .resultado {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #333;
+      background: var(--amarelo);
+      border-radius: 8px;
+      padding: 4px 12px;
+      white-space: nowrap;
+    }
+
+    .vazio { text-align: center; color: #999; padding: 10px; }
+
+    footer {
+      text-align: center;
+      padding: 14px;
+      font-size: 0.8rem;
+      color: #888;
+      background: #fafafa;
+    }
+
+    /* ===== Responsivo ===== */
+    @media (max-width: 360px) {
+      header h1 { font-size: 1.35rem; }
+      .placar { gap: 8px; padding: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="bandeiras" style="display:flex;align-items:center;justify-content:center;gap:16px;">
+        <img src="https://flagcdn.com/w80/gb-sct.png" alt="Escócia" style="height:2.4rem;border-radius:4px;">
+        <span style="font-size:2rem;">⚽</span>
+        <img src="https://flagcdn.com/w80/br.png" alt="Brasil" style="height:2.4rem;border-radius:4px;">
+      </div>
+      <h1>Bolão Escócia × Brasil</h1>
+      <p>Dê seu palpite e concorra com a família!</p>
+    </header>
+
+    <div class="contador">
+      👥 Participantes: <span id="contadorParticipantes">0</span>
+    </div>
+
+    <div id="bannerEncerrado" style="display:none;background:#c62828;color:#fff;text-align:center;padding:14px 16px;font-weight:700;font-size:1rem;">
+      ⛔ Apostas encerradas — prazo: 17h45 (Manaus) / 18h45 (Brasília)
+    </div>
+
+    <!-- ===== Formulário ===== -->
+    <form id="formBolao" autocomplete="on">
+      <div class="campo">
+        <label for="nome">Nome completo *</label>
+        <input type="text" id="nome" name="nome" placeholder="Seu nome" required />
+      </div>
+
+      <div class="campo">
+        <label for="email">E-mail (opcional)</label>
+        <input type="email" id="email" name="email" placeholder="voce@email.com" />
+      </div>
+
+      <div class="campo">
+        <label for="telefone">Telefone *</label>
+        <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000" maxlength="15" required />
+      </div>
+
+      <label style="margin-bottom:6px;">Seu palpite *</label>
+      <div class="placar">
+        <div class="time">
+          <div class="nome-time"><img src="https://flagcdn.com/w80/gb-sct.png" alt="Escócia" style="height:2rem;border-radius:3px;"></div>
+          <label for="golsEscocia">Escócia</label>
+          <input type="number" id="golsEscocia" name="golsEscocia" min="0" max="20" placeholder="0" required />
+        </div>
+        <div class="x">×</div>
+        <div class="time">
+          <div class="nome-time"><img src="https://flagcdn.com/w80/br.png" alt="Brasil" style="height:2rem;border-radius:3px;"></div>
+          <label for="golsBrasil">Brasil</label>
+          <input type="number" id="golsBrasil" name="golsBrasil" min="0" max="20" placeholder="0" required />
+        </div>
+      </div>
+
+      <div class="pagamento">
+        <div class="campo" style="margin-bottom:0;">
+          <label for="formaPagamento">Forma de pagamento (R$ 10) *</label>
+          <select id="formaPagamento" name="formaPagamento" required>
+            <option value="">Selecione...</option>
+            <option value="PIX">PIX</option>
+            <option value="Dinheiro">Dinheiro</option>
+            <option value="Transferência">Transferência</option>
+          </select>
+        </div>
+        <div class="checkbox-linha">
+          <input type="checkbox" id="confirmaPagamento" name="confirmaPagamento" />
+          <label for="confirmaPagamento">Me comprometo que farei o pagamento a ou aos vencedores</label>
+        </div>
+      </div>
+
+      <button type="submit" id="botaoEnviar">
+        <span id="textoBotao">✅ Registrar Palpite</span>
+        <span class="spinner" id="spinner"></span>
+      </button>
+
+      <div class="mensagem" id="mensagem"></div>
+    </form>
+
+    <!-- ===== Lista em tempo real ===== -->
+    <div class="lista-palpites">
+      <h2>📋 Palpites registrados</h2>
+      <div id="listaPalpites">
+        <p class="vazio">Ainda não há palpites. Seja o primeiro!</p>
+      </div>
+    </div>
+
+    <footer>Bolão familiar • Sincronizado em tempo real ⚡</footer>
+  </div>
+
+  <!-- ===================================================================
+       JAVASCRIPT + FIREBASE (SDK 9.23.0 modular via CDN)
+  ==================================================================== -->
+  <script type="module">
+    // ---- Imports do Firebase (módulos via CDN) ----
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged }
+      from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+    import { getDatabase, ref, push, onValue, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+    // ===================================================================
+    // 1) CREDENCIAIS DO FIREBASE
+    // ===================================================================
+    const firebaseConfig = {
+      apiKey:            "AIzaSyDEZTCypgUM-oOzY6KykUrwEMoKWopicDw",
+      authDomain:        "bolao-brasil-641ef.firebaseapp.com",
+      databaseURL:       "https://bolao-brasil-641ef-default-rtdb.firebaseio.com",
+      projectId:         "bolao-brasil-641ef",
+      storageBucket:     "bolao-brasil-641ef.firebasestorage.app",
+      messagingSenderId: "391200745399",
+      appId:             "1:391200745399:web:06f1866cbe3b7cb41c6a32"
+    };
+
+    // ---- Elementos da página ----
+    const form         = document.getElementById("formBolao");
+    const botao        = document.getElementById("botaoEnviar");
+    const textoBotao   = document.getElementById("textoBotao");
+    const spinner      = document.getElementById("spinner");
+    const mensagem     = document.getElementById("mensagem");
+    const contadorEl   = document.getElementById("contadorParticipantes");
+    const listaEl      = document.getElementById("listaPalpites");
+    const telefoneEl   = document.getElementById("telefone");
+
+    // Prazo: 15 min antes do jogo (19h Brasília = 22h UTC 24/06)
+    const PRAZO_APOSTAS   = new Date("2026-06-24T21:45:00Z"); // 18h45 Brasília
+    const bannerEncerrado = document.getElementById("bannerEncerrado");
+
+    function apostasAbertas() { return new Date() < PRAZO_APOSTAS; }
+
+    function verificarPrazo() {
+      if (!apostasAbertas()) {
+        bannerEncerrado.style.display = "block";
+        Array.from(form.elements).forEach(el => el.disabled = true);
+        botao.style.display = "none";
+      }
+    }
+
+    let db = null;
+    let firebaseOk = false;
+
+    // ===================================================================
+    // 2) INICIALIZA O FIREBASE (com try/catch)
+    // ===================================================================
+    try {
+      const app  = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      db         = getDatabase(app);
+
+      signInAnonymously(auth).catch((erro) => {
+        console.error("Erro no login anônimo:", erro);
+        mostrarMensagem("⚠️ Não foi possível conectar. Verifique a Autenticação Anônima no Firebase.", "erro");
+      });
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          firebaseOk = true;
+          console.log("✅ Conectado ao Firebase (uid:", user.uid + ")");
+          escutarPalpites();
+        }
+      });
+    } catch (erro) {
+      console.error("Falha ao inicializar o Firebase:", erro);
+      mostrarMensagem("⚠️ Firebase não configurado. Os palpites serão salvos só neste aparelho.", "erro");
+      carregarLocal();
+    }
+
+    // ===================================================================
+    // 3) ESCUTA EM TEMPO REAL  (/bolao-escocia/palpites)
+    // ===================================================================
+    function escutarPalpites() {
+      const palpitesRef = ref(db, "bolao-escocia/palpites");
+      onValue(palpitesRef, (snapshot) => {
+        const dados = snapshot.val() || {};
+        const lista = Object.values(dados);
+        atualizarContador(lista.length);
+        renderizarLista(lista);
+      });
+    }
+
+    // ===================================================================
+    // 4) ENVIO DO FORMULÁRIO
+    // ===================================================================
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!apostasAbertas()) {
+        mostrarMensagem("⛔ Apostas encerradas! O prazo foi às 18h45 (Brasília).", "erro");
+        return;
+      }
+
+      // --- Validação ---
+      const nome  = form.nome.value.trim();
+      const tel   = form.telefone.value.trim();
+      const esc   = form.golsEscocia.value;
+      const bra   = form.golsBrasil.value;
+      const forma = form.formaPagamento.value;
+
+      if (!nome || !tel || esc === "" || bra === "" || !forma) {
+        mostrarMensagem("⚠️ Preencha todos os campos obrigatórios (*).", "erro");
+        return;
+      }
+
+      const palpite = {
+        nome:       nome,
+        email:      form.email.value.trim(),
+        telefone:   tel,
+        escocia:    Number(esc),
+        brasil:     Number(bra),
+        pagamento:  forma,
+        pago:       form.confirmaPagamento.checked,
+        dataHora:   new Date().toLocaleString("pt-BR")
+      };
+
+      ativarLoading(true);
+
+      try {
+        if (firebaseOk && db) {
+          await push(ref(db, "bolao-escocia/palpites"), { ...palpite, criadoEm: serverTimestamp() });
+        } else {
+          salvarLocal(palpite);
+        }
+        mostrarMensagem("🎉 Palpite registrado com sucesso! Boa sorte!", "sucesso");
+        form.reset();
+      } catch (erro) {
+        console.error("Erro ao salvar:", erro);
+        salvarLocal(palpite);
+        mostrarMensagem("⚠️ Houve um problema na nuvem. Salvamos neste aparelho.", "erro");
+      } finally {
+        ativarLoading(false);
+      }
+    });
+
+    // ===================================================================
+    // 5) FUNÇÕES AUXILIARES
+    // ===================================================================
+    function ativarLoading(ligado) {
+      botao.disabled = ligado;
+      spinner.style.display = ligado ? "inline-block" : "none";
+      textoBotao.textContent = ligado ? "Enviando..." : "✅ Registrar Palpite";
+    }
+
+    function mostrarMensagem(texto, tipo) {
+      mensagem.textContent = texto;
+      mensagem.className = "mensagem " + tipo;
+      mensagem.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (tipo === "sucesso") {
+        setTimeout(() => { mensagem.className = "mensagem"; }, 5000);
+      }
+    }
+
+    function atualizarContador(qtd) {
+      contadorEl.textContent = qtd;
+    }
+
+    function renderizarLista(lista) {
+      if (!lista.length) {
+        listaEl.innerHTML = '<p class="vazio">Ainda não há palpites. Seja o primeiro!</p>';
+        return;
+      }
+      lista.sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0));
+
+      listaEl.innerHTML = lista.map((p) => `
+        <div class="palpite-item">
+          <div class="info">
+            <span class="nome">${escapar(p.nome)}</span>
+            <span class="pago ${p.pago ? "ok" : ""}">
+              ${p.pago ? "💰 Pago" : "⏳ Pendente"} • ${escapar(p.pagamento || "")}
+            </span>
+          </div>
+          <div class="resultado">${p.escocia} × ${p.brasil}</div>
+        </div>
+      `).join("");
+    }
+
+    function escapar(txt) {
+      const div = document.createElement("div");
+      div.textContent = txt == null ? "" : String(txt);
+      return div.innerHTML;
+    }
+
+    // ---- Formatação automática do telefone ----
+    telefoneEl.addEventListener("input", (e) => {
+      let v = e.target.value.replace(/\D/g, "").slice(0, 11);
+      if (v.length > 6)       v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+      else if (v.length > 2)  v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+      else if (v.length > 0)  v = `(${v}`;
+      e.target.value = v;
+    });
+
+    // ===================================================================
+    // 6) FALLBACK localStorage (caso o Firebase falhe)
+    // ===================================================================
+    function salvarLocal(palpite) {
+      const lista = JSON.parse(localStorage.getItem("bolaoEscocia") || "[]");
+      lista.push(palpite);
+      localStorage.setItem("bolaoEscocia", JSON.stringify(lista));
+      atualizarContador(lista.length);
+      renderizarLista(lista);
+    }
+
+    function carregarLocal() {
+      const lista = JSON.parse(localStorage.getItem("bolaoEscocia") || "[]");
+      atualizarContador(lista.length);
+      renderizarLista(lista);
+    }
+
+    verificarPrazo();
+  </script>
+</body>
+</html>
