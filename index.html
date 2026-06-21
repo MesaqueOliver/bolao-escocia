@@ -580,6 +580,7 @@
           firebaseOk = true;
           console.log("✅ Conectado ao Firebase (uid:", user.uid + ")");
           escutarPalpites();
+          escutarResultado();
         }
       });
     } catch (erro) {
@@ -598,6 +599,17 @@
         const lista = Object.values(dados);
         atualizarContador(lista.length);
         renderizarLista(lista);
+      });
+    }
+
+    function escutarResultado() {
+      const resultadoRef = ref(db, "bolao-escocia/resultado");
+      onValue(resultadoRef, (snapshot) => {
+        const resultado = snapshot.val();
+        if (resultado) {
+          mostrarResultadoFinal(resultado.escocia, resultado.brasil);
+          carregarEMarcarVencedores(resultado.escocia, resultado.brasil);
+        }
       });
     }
 
