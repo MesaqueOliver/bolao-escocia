@@ -435,8 +435,8 @@
       </div>
 
       <div class="campo">
-        <label for="email">E-mail (opcional)</label>
-        <input type="email" id="email" name="email" placeholder="voce@email.com" />
+        <label for="chavePix">Chave PIX *</label>
+        <input type="text" id="chavePix" name="chavePix" placeholder="E-mail, CPF, Telefone ou Chave aleatória" required />
       </div>
 
       <div class="campo">
@@ -626,7 +626,7 @@
 
       const palpite = {
         nome:       nome,
-        email:      form.email.value.trim(),
+        chavePix:   form.chavePix.value.trim(),
         telefone:   tel,
         escocia:    Number(esc),
         brasil:     Number(bra),
@@ -688,7 +688,7 @@
           <div class="info">
             <span class="nome">${escapar(p.nome)}</span>
             <span class="pago ${p.pago ? "ok" : ""}">
-              ${p.pago ? "💰 Pago" : "⏳ Pendente"} • ${escapar(p.pagamento || "")}
+              ${p.pago ? "💰 Pago" : "⏳ Pendente"} • 🔑 ${escapar(p.chavePix || "")}
             </span>
           </div>
           <div class="resultado">${p.escocia} × ${p.brasil}</div>
@@ -824,7 +824,7 @@
           let html = `<p style='font-weight:700;color:var(--verde-escuro);margin-bottom:10px;'>🏆 ${vencedores.length} vencedor(es) - R$ ${premioPorVencedor} cada</p>`;
 
           vencedores.forEach((v) => {
-            const chave = v.email || v.telefone || "Sem contato";
+            const chave = v.chavePix || "Sem chave PIX";
             html += `<div style='background:#f0f0f0;padding:8px;border-radius:6px;margin-bottom:6px;font-size:0.9rem;'>
               <strong>${escapar(v.nome)}</strong><br/>
               <small>PIX/Contato: ${escapar(chave)}</small>
@@ -858,7 +858,7 @@
             <div class="info">
               <span class="nome">${badge}${escapar(p.nome)}</span>
               <span class="pago ${p.pago ? "ok" : ""}">
-                ${p.pago ? "💰 Pago" : "⏳ Pendente"} • ${escapar(p.pagamento || "")}
+                ${p.pago ? "💰 Pago" : "⏳ Pendente"} • 🔑 ${escapar(p.chavePix || "")}
               </span>
             </div>
             <div class="resultado">${p.escocia} × ${p.brasil}</div>
