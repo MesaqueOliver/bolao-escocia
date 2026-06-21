@@ -273,6 +273,126 @@
       background: #fafafa;
     }
 
+    /* ===== Painel Admin ===== */
+    #painelAdmin {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #painelAdmin.ativo { display: flex; }
+
+    .modal-admin {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: surgir 0.3s ease;
+    }
+
+    .modal-admin h2 {
+      color: var(--verde-escuro);
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .modal-admin .campo {
+      margin-bottom: 14px;
+    }
+
+    .modal-admin label {
+      color: var(--verde-escuro);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .modal-admin input[type="number"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .modal-admin button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--verde-escuro), var(--verde-claro));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: transform 0.15s, box-shadow 0.3s;
+    }
+
+    .modal-admin button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(27, 94, 32, 0.4);
+    }
+
+    .modal-admin button.fechar {
+      background: #999;
+      margin-top: 8px;
+    }
+
+    .palpite-item.vencedor {
+      background: #e8f5e9;
+      border-left-color: #4CAF50;
+      border-left-width: 6px;
+    }
+
+    .palpite-item.vencedor .resultado {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .resultado-final {
+      background: #fff3cd;
+      border: 2px solid var(--amarelo);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      text-align: center;
+      display: none;
+    }
+
+    .resultado-final.ativo {
+      display: block;
+    }
+
+    .resultado-final h3 {
+      color: var(--verde-escuro);
+      margin-bottom: 8px;
+    }
+
+    .resultado-final .placar-final {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 12px;
+    }
+
+    .vencedores-info {
+      display: none;
+    }
+
+    .vencedores-info.ativo {
+      display: block;
+    }
+
     /* ===== Responsivo ===== */
     @media (max-width: 360px) {
       header h1 { font-size: 1.35rem; }
@@ -299,6 +419,12 @@
 
     <div id="bannerEncerrado" style="display:none;background:#c62828;color:#fff;text-align:center;padding:14px 16px;font-weight:700;font-size:1rem;">
       ⛔ Apostas encerradas — prazo: 17h45 (Manaus) / 18h45 (Brasília)
+    </div>
+
+    <div id="resultadoFinal" class="resultado-final">
+      <h3>⚽ Resultado Final</h3>
+      <div class="placar-final" id="placarFinal">0 × 0</div>
+      <div class="vencedores-info" id="vencedoresInfo"></div>
     </div>
 
     <!-- ===== Formulário ===== -->
@@ -368,6 +494,23 @@
     <footer>Bolão familiar • Sincronizado em tempo real ⚡</footer>
   </div>
 
+  <!-- ===== Painel de Admin (modal) ===== -->
+  <div id="painelAdmin">
+    <div class="modal-admin">
+      <h2>⚙️ Resultado Final</h2>
+      <div class="campo">
+        <label for="adminEscocia">Gols Escócia *</label>
+        <input type="number" id="adminEscocia" min="0" max="20" placeholder="0" />
+      </div>
+      <div class="campo">
+        <label for="adminBrasil">Gols Brasil *</label>
+        <input type="number" id="adminBrasil" min="0" max="20" placeholder="0" />
+      </div>
+      <button id="botaoRegistrarResultado">✅ Registrar Resultado</button>
+      <button id="botaoFecharAdmin" class="fechar">❌ Fechar</button>
+    </div>
+  </div>
+
   <!-- ===================================================================
        JAVASCRIPT + FIREBASE (SDK 9.23.0 modular via CDN)
   ==================================================================== -->
@@ -376,7 +519,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
     import { getAuth, signInAnonymously, onAuthStateChanged }
       from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-    import { getDatabase, ref, push, onValue, serverTimestamp }
+    import { getDatabase, ref, push, onValue, serverTimestamp, set }
       from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
     // ===================================================================
@@ -583,6 +726,145 @@
       const lista = JSON.parse(localStorage.getItem("bolaoEscocia") || "[]");
       atualizarContador(lista.length);
       renderizarLista(lista);
+    }
+
+    // ===================================================================
+    // 7) PAINEL ADMIN - Revelar ao clicar 5x no título
+    // ===================================================================
+    let contadorCliques = 0;
+    const headerH1 = document.querySelector("header h1");
+    const painelAdmin = document.getElementById("painelAdmin");
+    const botaoRegistrarResultado = document.getElementById("botaoRegistrarResultado");
+    const botaoFecharAdmin = document.getElementById("botaoFecharAdmin");
+    const adminEscocia = document.getElementById("adminEscocia");
+    const adminBrasil = document.getElementById("adminBrasil");
+    const resultadoFinal = document.getElementById("resultadoFinal");
+    const placarFinal = document.getElementById("placarFinal");
+    const vencedoresInfo = document.getElementById("vencedoresInfo");
+
+    let resultadoRegistrado = null;
+
+    headerH1.style.cursor = "pointer";
+    headerH1.addEventListener("click", () => {
+      contadorCliques++;
+      if (contadorCliques >= 5) {
+        contadorCliques = 0;
+        painelAdmin.classList.add("ativo");
+      }
+    });
+
+    botaoFecharAdmin.addEventListener("click", () => {
+      painelAdmin.classList.remove("ativo");
+    });
+
+    painelAdmin.addEventListener("click", (e) => {
+      if (e.target === painelAdmin) {
+        painelAdmin.classList.remove("ativo");
+      }
+    });
+
+    // ===================================================================
+    // Registrar resultado final e marcar vencedores
+    // ===================================================================
+    botaoRegistrarResultado.addEventListener("click", async () => {
+      const esc = Number(adminEscocia.value);
+      const bra = Number(adminBrasil.value);
+
+      if (adminEscocia.value === "" || adminBrasil.value === "") {
+        alert("⚠️ Preencha os gols de ambos os times!");
+        return;
+      }
+
+      resultadoRegistrado = { escocia: esc, brasil: bra };
+
+      try {
+        if (firebaseOk && db) {
+          // Salva resultado no Firebase
+          await set(ref(db, "bolao-escocia/resultado"), resultadoRegistrado);
+        }
+
+        // Mostra resultado na página
+        mostrarResultadoFinal(esc, bra);
+
+        // Marca vencedores
+        carregarEMarcarVencedores(esc, bra);
+
+        painelAdmin.classList.remove("ativo");
+        mostrarMensagem("✅ Resultado registrado! Vencedores marcados.", "sucesso");
+      } catch (erro) {
+        console.error("Erro ao registrar resultado:", erro);
+        mostrarMensagem("⚠️ Erro ao salvar resultado.", "erro");
+      }
+    });
+
+    function mostrarResultadoFinal(esc, bra) {
+      placarFinal.textContent = `${esc} × ${bra}`;
+      resultadoFinal.classList.add("ativo");
+    }
+
+    function carregarEMarcarVencedores(golsEscocia, golsBrasil) {
+      const palpitesRef = ref(db, "bolao-escocia/palpites");
+      onValue(palpitesRef, (snapshot) => {
+        const dados = snapshot.val() || {};
+        const lista = Object.entries(dados);
+        const vencedores = [];
+        const totalParticipantes = lista.length;
+        const arrecadacao = totalParticipantes * 10;
+
+        lista.forEach(([key, palpite]) => {
+          if (palpite.escocia === golsEscocia && palpite.brasil === golsBrasil) {
+            vencedores.push({ key, ...palpite });
+          }
+        });
+
+        if (vencedores.length === 0) {
+          vencedoresInfo.innerHTML = "<p style='color:#c62828;'>Nenhum vencedor! 😢</p>";
+        } else {
+          const premioPorVencedor = (arrecadacao / vencedores.length).toFixed(2);
+          let html = `<p style='font-weight:700;color:var(--verde-escuro);margin-bottom:10px;'>🏆 ${vencedores.length} vencedor(es) - R$ ${premioPorVencedor} cada</p>`;
+
+          vencedores.forEach((v) => {
+            const chave = v.email || v.telefone || "Sem contato";
+            html += `<div style='background:#f0f0f0;padding:8px;border-radius:6px;margin-bottom:6px;font-size:0.9rem;'>
+              <strong>${escapar(v.nome)}</strong><br/>
+              <small>PIX/Contato: ${escapar(chave)}</small>
+            </div>`;
+          });
+
+          vencedoresInfo.innerHTML = html;
+        }
+
+        vencedoresInfo.classList.add("ativo");
+        renderizarListaComVencedores(Object.values(dados), vencedores);
+      }, { onlyOnce: true });
+    }
+
+    function renderizarListaComVencedores(lista, vencedores) {
+      if (!lista.length) {
+        listaEl.innerHTML = '<p class="vazio">Ainda não há palpites. Seja o primeiro!</p>';
+        return;
+      }
+
+      lista.sort((a, b) => (b.criadoEm || 0) - (a.criadoEm || 0));
+
+      const vencedoresSet = new Set(vencedores.map(v => v.nome));
+
+      listaEl.innerHTML = lista.map((p) => {
+        const isVencedor = vencedoresSet.has(p.nome);
+        const classe = isVencedor ? "vencedor" : "";
+        const badge = isVencedor ? "🏆 " : "";
+        return `
+          <div class="palpite-item ${classe}">
+            <div class="info">
+              <span class="nome">${badge}${escapar(p.nome)}</span>
+              <span class="pago ${p.pago ? "ok" : ""}">
+                ${p.pago ? "💰 Pago" : "⏳ Pendente"} • ${escapar(p.pagamento || "")}
+              </span>
+            </div>
+            <div class="resultado">${p.escocia} × ${p.brasil}</div>
+          </div>
+        `;
+      }).join("");
     }
 
     verificarPrazo();
